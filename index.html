@@ -8,8 +8,12 @@
 <body>
     <h1>MVVM Principle</h1>
     <div id="root">
-        This is binding property of ViewModel <span>{{product}}</span>
-        <input type="text" name="" v-model="price">
+        Product : <span>{{product}}</span>
+        <!-- <input type="text" name="" v-model="price"> -->
+        <br />
+        Price : <input type="number" name="txtPrice" v-model="price" />
+        <br />
+        Price : {{price}}
     </div>
     <script type="text/javascript" src="observer.js"></script>
     <script type="text/javascript" src="watcher.js"></script>

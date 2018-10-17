@@ -41,6 +41,8 @@ Compile.prototype = {
             if (me.isElementNode(node)) {
                 me.compile(node);
             } else if (me.isTextNode(node) && reg.test(text)) {
+                //非标准$1~$9属性是包含括号子串匹配的正则表达式,尽量不要在生产环境使用
+                //这里RegExp.$1就是得到双括号里面的所有内容
                 me.compileText(node, RegExp.$1);
             }
 
@@ -76,24 +78,24 @@ Compile.prototype = {
     compileText: function(node, exp) {
         compileUtil.text(node, this.$vm, exp);
     },
-
+    //directive 指令,指导的
     isDirective: function(attr) {
-        return attr.index('v-') === 0;
+        return attr.indexOf('v-') === 0;
     },
 
     isEventDirective: function(attr) {
-        return attr.index('on') === 0;
+        return attr.indexOf('on') === 0;
     },
 
     isElementNode: function(node) {
         /*
-        	1 -- element
-        	2 -- Attr 
-        	3 -- Text
-        	4 -- CDATASection
-        	8 -- Comment
-        	9 -- Document 整个文档 (DOM树的根节点)
-        	11 -- DocumentFragment
+            1 -- element
+            2 -- Attr 
+            3 -- Text
+            4 -- CDATASection
+            8 -- Comment
+            9 -- Document 整个文档 (DOM树的根节点)
+            11 -- DocumentFragment
         */
         return node.nodeType == 1;
     },
@@ -112,18 +114,24 @@ var compileUtil = {
     model: function(node, vm, exp) {
         this.bind(node, vm, exp, 'model');
 
-        /* var me = this;
-          var val = this._getVMVal(vm, exp);
-          node.addEventListener('input', function(e) {
-              var newValue = e.target.value;
-              if (val == newValue) {
-                  return;
-              }
+        var me = this;
+        var val = this._getVMVal(vm, exp);
+        /*
+        input event,当<input> <select> <textarea>元素的值更改时
+        ,DOM input事件会同步触发.
+        对于type=ckeckbox 或type=radio的input元素,当每次切换控件
+        (通过触摸/鼠标或键盘) input事件都应该触发,从历史来看,情况并非如此.
+        或者使用change事件代替
+        */
+        node.addEventListener('input', function(e) {
+            var newValue = e.target.value;
+            if (val == newValue) {
+                return;
+            }
 
-              me._setVMVal(vm, exp, newValue);
-              val = newValue;
-          }) //需要理解  
-          */
+            me._setVMVal(vm, exp, newValue);
+            val = newValue;
+        });
     },
 
     bind: function(node, vm, exp, cmd) {
@@ -134,6 +142,36 @@ var compileUtil = {
         new Watcher(vm, exp, function(value, oldValue) {
             updateFn && updateFn(node, value, oldValue);
         });
+    },
+
+    _getVMVal: function(vm, exp) {
+        // ex : get val by "a.b.c"
+        // {
+        //     a:{
+        //         b:{
+        //             c: 'test'
+        //         }
+        //     }
+        // }
+        var val = vm;
+        exp = exp.split('.');
+        exp.forEach(function(k) {
+            val = val[k];
+        });
+        return val;
+    },
+
+    _setVMVal: function(vm, exp, newValue) {
+        var val = vm;
+        exp = exp.split('.');
+        exp.forEach(function(k, i) {
+            //非最后一个key,更新val的值
+            if (i < exp.length - 1) {
+                val = val[k];
+            } else {
+                val[k] = newValue;
+            }
+        })
     }
 };
 
