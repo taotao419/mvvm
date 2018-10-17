@@ -1,18 +1,31 @@
-function Watcher(data,updateFunc) {
-	this.data=data;
-	this.updateFunc=updateFunc;
+function Watcher(vm, exp, updateFunc) {
+    this.vm = vm;
+    this.exp = exp;
+    this.updateFunc = updateFunc;
+
+    //init value
+    this.value = this.get();
 }
 
-Watcher.prototype={
-	get:function (key) {
-		Dep.target=this;
-		var tmp=this.data[key];//trigger data get function , then addSub
-		Dep.target=null;
-	},
+Watcher.prototype = {
+    get: function() {
+        Dep.target = this;
+        //vm -> data , exp -> key
+        var value = this.vm[this.exp]; //trigger data get function , then addSub
+        Dep.target = null;
+        return value;
+    },
 
-	update:function () {
-		if(this.updateFunc&&typeof this.updateFunc=='function'){
-			this.updateFunc();
-		}
-	}
+    update: function() {
+        this.run(); //属性值变化收到通知
+    },
+
+    run: function() {
+        var value = this.get(); //get latest value
+        var oldVal = this.value;
+        if (value != oldVal) {
+            this.updateFunc.call(this.vm, value, oldVal);
+        }
+    },
+
 }

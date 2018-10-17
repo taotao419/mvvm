@@ -1,35 +1,46 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-	<title>MVVM Principle</title>
+    <title>MVVM Principle</title>
 </head>
+
 <body>
-	<h1>MVVM Principle</h1>
-	<script type="text/javascript" src="observer.js"></script>
-	<script type="text/javascript" src="watcher.js"></script>
-	<script type="text/javascript">
-	var obj= {
-		a:1,
-		c:{
-			d:'child string initlized'
-		},
-	}
-	//obj.b='string initlized';
-	// observe(obj);
-	// obj.b='string initlized';//only observer the startup object, if property is added later, it can't be observered.
+    <h1>MVVM Principle</h1>
+    <div id="root">
+        This is binding property of ViewModel <span>{{product}}</span>
+    </div>
+    <script type="text/javascript" src="observer.js"></script>
+    <script type="text/javascript" src="watcher.js"></script>
+    <script type="text/javascript" src="compile.js"></script>
+    <script type="text/javascript">
+    var viewModel = {
+        a: 1,
+        c: {
+            d: 'child string initlized'
+        },
+        product: 'Socks',
+    }
+    //obj.b='string initlized';
+    // observe(obj);
+    // obj.b='string initlized';//only observer the startup object, if property is added later, it can't be observered.
 
-	// obj.a=2;//OK
-	// obj.c.d='child string updated';
+    // obj.a=2;//OK
+    // obj.c.d='child string updated';
 
-	// obj.b='string changed';//can't be observer
-	
-	observe(obj);
-	var watcher=new Watcher(obj,function(){
-		console.log('watcher observe specfied property has bee changed , and doing sth.');
-	}).get('a');
+    // obj.b='string changed';//can't be observer
 
-	obj.a = 2;//OK
-	obj.c.d='child string updated';
-	</script>
+    // observe(viewModel);
+    // var watcher = new Watcher(viewModel, function() {
+    //     console.log('watcher observe specfied property has bee changed , and doing sth.');
+    // }).get('a');
+
+    // viewModel.a = 2; //OK
+    // viewModel.c.d = 'child string updated';
+
+    observe(viewModel);
+    var compile = new Compile("#root", viewModel);
+    </script>
 </body>
+
 </html>
