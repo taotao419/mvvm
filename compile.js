@@ -77,6 +77,14 @@ Compile.prototype = {
         compileUtil.text(node, this.$vm, exp);
     },
 
+    isDirective: function(attr) {
+        return attr.index('v-') === 0;
+    },
+
+    isEventDirective: function(attr) {
+        return attr.index('on') === 0;
+    },
+
     isElementNode: function(node) {
         /*
         	1 -- element
@@ -101,6 +109,23 @@ var compileUtil = {
         this.bind(node, vm, exp, 'text');
     },
 
+    model: function(node, vm, exp) {
+        this.bind(node, vm, exp, 'model');
+
+        /* var me = this;
+          var val = this._getVMVal(vm, exp);
+          node.addEventListener('input', function(e) {
+              var newValue = e.target.value;
+              if (val == newValue) {
+                  return;
+              }
+
+              me._setVMVal(vm, exp, newValue);
+              val = newValue;
+          }) //需要理解  
+          */
+    },
+
     bind: function(node, vm, exp, cmd) {
         var updateFn = updater[cmd + 'Updater'];
         //第一次初始化视图
@@ -115,5 +140,9 @@ var compileUtil = {
 var updater = {
     textUpdater: function(node, value) {
         node.textContent = typeof value == 'undefined' ? '' : value;
-    }
+    },
+
+    modelUpdater: function(node, value, oldValue) {
+        node.value = typeof value == 'undefined' ? '' : value;
+    },
 }

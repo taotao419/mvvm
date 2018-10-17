@@ -9,6 +9,7 @@
     <h1>MVVM Principle</h1>
     <div id="root">
         This is binding property of ViewModel <span>{{product}}</span>
+        <input type="text" name="" v-model="price">
     </div>
     <script type="text/javascript" src="observer.js"></script>
     <script type="text/javascript" src="watcher.js"></script>
@@ -20,6 +21,7 @@
             d: 'child string initlized'
         },
         product: 'Socks',
+        price: 35
     }
     //obj.b='string initlized';
     // observe(obj);
