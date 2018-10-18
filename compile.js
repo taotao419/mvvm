@@ -115,7 +115,7 @@ var compileUtil = {
         this.bind(node, vm, exp, 'model');
 
         var me = this;
-        console.log("run compileUtil model _getVMVal function [ln 119]");
+        console.log("run compileUtil model _getVMVal function.");
         var val = this._getVMVal(vm, exp);
         /*
         input event,当<input> <select> <textarea>元素的值更改时
@@ -143,6 +143,14 @@ var compileUtil = {
         new Watcher(vm, exp, function(value, oldValue) {
             updateFn && updateFn(node, value, oldValue);
         });
+    },
+
+    eventHandler: function(node, vm, exp, cmd) {
+        //get function name via 
+        //ex: exp='click : onClick'
+        //冒号左边是触发事件 , 右边是函数名
+        var eventName = exp.split(':')[0];
+        var methodName = exp.split(':')[1];
     },
 
     _getVMVal: function(vm, exp) {
