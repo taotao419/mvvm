@@ -18,15 +18,20 @@
     <script type="text/javascript" src="observer.js"></script>
     <script type="text/javascript" src="watcher.js"></script>
     <script type="text/javascript" src="compile.js"></script>
+    <script type="text/javascript" src="mvvm.js"></script>
     <script type="text/javascript">
-    var viewModel = {
-        a: 1,
-        c: {
-            d: 'child string initlized'
-        },
-        product: 'Socks',
-        price: 35
-    }
+    var vm = new MVVM({
+        el: "#root",
+        data: {
+            a: 1,
+            c: {
+                d: 'child string initlized'
+            },
+            product: 'Socks',
+            price: 35
+        }
+    });
+
     //obj.b='string initlized';
     // observe(obj);
     // obj.b='string initlized';//only observer the startup object, if property is added later, it can't be observered.
@@ -44,8 +49,8 @@
     // viewModel.a = 2; //OK
     // viewModel.c.d = 'child string updated';
 
-    observe(viewModel);
-    var compile = new Compile("#root", viewModel);
+    // observe(viewModel);
+    // var compile = new Compile("#root", viewModel);
     </script>
 </body>
 

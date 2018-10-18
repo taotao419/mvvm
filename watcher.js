@@ -9,6 +9,7 @@ function Watcher(vm, exp, updateFunc) {
 
 Watcher.prototype = {
     get: function() {
+        //Dep.target 就是这个类的静态变量
         Dep.target = this;
         //vm -> data , exp -> key
         var value = this.vm[this.exp]; //trigger data get function , then addSub

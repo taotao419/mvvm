@@ -115,6 +115,7 @@ var compileUtil = {
         this.bind(node, vm, exp, 'model');
 
         var me = this;
+        console.log("run compileUtil model _getVMVal function [ln 119]");
         var val = this._getVMVal(vm, exp);
         /*
         input event,当<input> <select> <textarea>元素的值更改时
