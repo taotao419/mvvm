@@ -14,6 +14,8 @@
         Price : <input type="number" name="txtPrice" v-model="price" />
         <br />
         Price : {{price}}
+        <br />
+        <button v-on="click:log">click me</button>
     </div>
     <script type="text/javascript" src="observer.js"></script>
     <script type="text/javascript" src="watcher.js"></script>
@@ -29,6 +31,12 @@
             },
             product: 'Socks',
             price: 35
+        },
+        methods: {
+            log: function() {
+                this.product = "袜子";
+                console.log("just log sth.");
+            }
         }
     });
 

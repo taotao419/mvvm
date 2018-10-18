@@ -1,6 +1,7 @@
-function Compile(el, vm) {
+function Compile(el, vm, methods) {
     this.$vm = vm;
     this.$el = /*this.isElementNode(el) ? el :*/ document.querySelector(el);
+    this.$methods = methods;
     if (this.$el) {
         this.$fragment = this.node2Fragment(this.$el);
         this.init();
@@ -65,7 +66,7 @@ Compile.prototype = {
                 var cmd = attrName.substring(2); //v-text取v-后面的字符串 即text
                 if (me.isEventDirective(cmd)) {
                     //event command , ex : v-on:click
-                    compileUtil.eventHandler(node, me.$vm, exp, cmd);
+                    compileUtil.eventHandler(node, me.$vm, exp, cmd, me.$methods);
                 } else {
                     //common command
                     //函数存在并且执行此函数
@@ -145,12 +146,16 @@ var compileUtil = {
         });
     },
 
-    eventHandler: function(node, vm, exp, cmd) {
-        //get function name via 
+    eventHandler: function(node, vm, exp, cmd, methods) {
         //ex: exp='click : onClick'
-        //冒号左边是触发事件 , 右边是函数名
         var eventName = exp.split(':')[0];
         var methodName = exp.split(':')[1];
+        var method = methods[methodName];
+
+        if (eventName && method) {
+            //bind()方法创建一个新的函数,当这个新函数被调用时其this设置为提供的值,就是括号里面的值bind(inputObj)
+            node.addEventListener(eventName, method.bind(vm));
+        }
     },
 
     _getVMVal: function(vm, exp) {
