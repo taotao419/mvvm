@@ -154,7 +154,27 @@ var compileUtil = {
 
         if (eventName && method) {
             //bind()方法创建一个新的函数,当这个新函数被调用时其this设置为提供的值,就是括号里面的值bind(inputObj)
-            node.addEventListener(eventName, method.bind(vm));
+            //node.addEventListener(eventName, method.bind(vm));
+            //也可以使用apply 来改变this为提供的值.
+            //apply,call 几乎差不多
+            //apply 方法传入两个参数：一个是作为函数上下文的对象，另外一个是作为函数参数所组成的数组。并立即执行
+            //call 第一个参数也是作为函数上下文的对象，但是后面传入的是一个参数列表，而不是单个数组。并立即执行
+            //bind 没有立即执行 ,要bind(obj)() 再执行.
+            /*
+                方便记忆:
+                猫吃鱼,狗吃肉,奥特曼打小怪兽.
+                有天狗想吃鱼了
+                猫.吃鱼.call(狗,鱼);
+                狗就吃到鱼了
+                猫成精了,想打怪兽
+                奥特曼.打怪兽.call(猫,小怪兽)
+
+                正常编程语言逻辑等同于人类语言中的主谓宾 
+                这里是 谓语前置.call(主语,宾语)
+            */
+            node.addEventListener(eventName, function(e) {
+                method.apply(vm);
+            });
         }
     },
 
